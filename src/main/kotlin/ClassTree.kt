@@ -15,13 +15,6 @@ object ClassTree {
         tree[node.name] = node
     }
 
-    fun listNodes() {
-        tree.forEach { (name, node) ->
-            println("$name: ${node.path}")
-            println("dependencies: ${node.dependencies}")
-        }
-    }
-
     fun buildGraph(className: String): String? =
         tree[className]?.let {
             val sb = StringBuilder()

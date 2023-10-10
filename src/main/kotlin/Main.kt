@@ -32,7 +32,6 @@ fun main(args: Array<String>) {
     println("className: $className")
 
     Parser.parseFiles(rootFolder)
-    ClassTree.listNodes()
     ClassTree.buildGraph(className)?.let { graph ->
         val cwd = Paths.get("").toAbsolutePath().toString()
         val workingDir = File(cwd)

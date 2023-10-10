@@ -26,3 +26,23 @@ For example, the following command will create a dependency graph for the ```Get
 ```bash
 kotlingraph -r /Users/youngmoonko/Projects/consumer-service/src/main -c GetDashPassCampaignsGrpcController
 ```
+
+### Shell command in the Mac
+You can set the following command in your ```.bash_profile``` to run the command more easier:
+- Open the ```.bash_profile``` file using an editor.
+- Copy and put the below code into your ```.bash_profile``` file.
+- Replace the kotlingraph installation path and project root path with your local configuration.
+
+```bash
+## Run kotlin graph
+## Usage: kotlingraph <name of class to build graph>
+kotlingraph() {
+    /Users/youngmoonko/Applications/kotlingraph/bin/kotlingraph -r /Users/youngmoonko/Projects/consumer-service/src/main/kotlin -c $1
+}
+```
+
+Now, you can run the command in the terminal as simply by just proving the class name to build dependency graph like this:
+- Be sure to open a new terminal to apply changed bash profile.
+```bash
+kotlingraph GetDashPassCampaignsGrpcController
+```

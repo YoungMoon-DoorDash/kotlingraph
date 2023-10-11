@@ -1,6 +1,8 @@
 import java.io.File
+import java.lang.StringBuilder
 
 object Parser {
+    private const val PACKAGE_HEADER = "package com.doordash.subscription."
     private val expClass = Regex("class (\\w+) @Inject constructor")
     private val expDep = Regex("(\\w+): (\\w+),")
 
@@ -15,10 +17,25 @@ object Parser {
         var classFound = false
         var className: String? = null
         val dependentList: MutableList<String> = mutableListOf()
+        println("Parsing ${file.path}")
         file.useLines { lines ->
             lines.forEach {
-                if (classFound) {
+                if (it.startsWith(PACKAGE_HEADER)) {
+                    val sb = StringBuilder()
+                    var i = PACKAGE_HEADER.length;
+                    while (i < it.length) {
+                        if (it[i] == '.') {
+                            break
+                        }
+
+                        sb.append(it[i])
+                        i++
+                    }
+                    ClassTree.addPackage(file.nameWithoutExtension, sb.toString())
+                } else if (classFound) {
                     if (it.endsWith("{")) {
+                        requireNotNull(className) { "Class name is null"}
+
                         ClassTree.addNode(ClassNode(className!!, file.path, dependentList.toList()))
 
                         classFound = false

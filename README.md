@@ -49,4 +49,9 @@ kotlingraph GetDashPassCampaignsGrpcController
 ### Sample graph
 - Each class prefixed with high-level package name.
 - Each class within the same package is colored with same color.
+- Tool will generate two graphs:
+   - Firt one shows all used class dependency by the specified class.
 ![GetDashPassCampaignsGrpcController](https://github.com/YoungMoon-DoorDash/kotlingraph/assets/122405315/098b9643-8e2c-421a-8cd6-1a93e7c83550)
+   - Second one postfixed with "_dep" shows all classes using the specified class. 
+![SubscriptionHelper_dep](https://github.com/YoungMoon-DoorDash/kotlingraph/assets/122405315/340ca300-edfb-448f-baec-577dd980a156)
+

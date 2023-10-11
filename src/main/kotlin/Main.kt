@@ -39,7 +39,7 @@ fun main(args: Array<String>) {
             out.println(graph)
         }
 
-        "dot -Tsvg $cwd/$className.vis -o$cwd/$className.svg".runCommand(workingDir)
+        "dot -Kfdp -Tsvg $cwd/$className.vis -o$cwd/$className.svg".runCommand(workingDir)
         "rm -rf $cwd/$className.vis".runCommand(workingDir)
         "open $cwd/$className.svg".runCommand(workingDir)
     } ?: println("Class not found")

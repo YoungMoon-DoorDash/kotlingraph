@@ -10,17 +10,17 @@ data class ClassNode(
 
 object ClassTree {
     private val packageColor = mapOf(
-        "common" to "blue",
+        "common" to "black",
         "dashpass_benefits" to "blue",
         "dashpass_management" to "green",
         "dashpass_partnerships" to "cyan",
-        "mealplan" to "gray",
-        "redeem_grpc" to "gray",
+        "mealplan" to "brown",
+        "redeem_grpc" to "pink",
         "subscription_cadence" to "magenta",
-        "subscription_common" to "magenta",
+        "subscription_common" to "orange",
         "subscription_grpc" to "red",
         "subscription_kafka" to "yellow",
-        "taxcalculation" to "gray"
+        "taxcalculation" to "purple"
     )
     private val tree: MutableMap<String, ClassNode> = mutableMapOf<String, ClassNode>().toSortedMap()
     private val packageMap: MutableMap<String, String> = mutableMapOf<String, String>()

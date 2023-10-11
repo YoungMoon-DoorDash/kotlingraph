@@ -47,4 +47,6 @@ Now, you can run the command in the terminal as simply by just proving the class
 kotlingraph GetDashPassCampaignsGrpcController
 ```
 ### Sample graph
+- Each class prefixed with high-level package name.
+- Each class within the same package is colored with same color.
 ![GetDashPassCampaignsGrpcController](https://github.com/YoungMoon-DoorDash/kotlingraph/assets/122405315/098b9643-8e2c-421a-8cd6-1a93e7c83550)

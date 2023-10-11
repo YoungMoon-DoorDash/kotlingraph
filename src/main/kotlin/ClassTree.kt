@@ -34,6 +34,8 @@ object ClassTree {
         packageMap[className] = packageName
     }
 
+    fun getPackage(className: String): String? = packageMap[className]
+
     fun buildGraph(className: String): String? =
         tree[className]?.let {
             val sb = StringBuilder()
@@ -42,11 +44,7 @@ object ClassTree {
 
             sb.append("digraph G {\n")
             buildGraph(it, sb, seen)
-            seen.forEach { node ->
-                val from = "${packageMap[node]}_${node}"
-                val color = packageColor[packageMap[node] ?: ""] ?: "black"
-                sb.append(" $from [color=$color];\n")
-            }
+            addColorForEachNode(seen, sb)
             sb.append("}")
             sb.toString()
         }
@@ -68,6 +66,14 @@ object ClassTree {
         }
     }
 
+    private fun addColorForEachNode(seen: MutableSet<String>, sb: StringBuilder) {
+        seen.forEach { node ->
+            val from = "${packageMap[node]}_${node}"
+            val color = packageColor[packageMap[node] ?: ""] ?: "black"
+            sb.append(" $from [color=$color];\n")
+        }
+    }
+
     fun findDependency(className: String): String {
         val sb = StringBuilder()
         val from = "${packageMap[className]}_${className}"
@@ -82,11 +88,7 @@ object ClassTree {
             }
         }
 
-        seen.forEach { node ->
-            val to = "${packageMap[node]}_${node}"
-            val color = packageColor[packageMap[node] ?: ""] ?: "black"
-            sb.append(" $to [color=$color];\n")
-        }
+        addColorForEachNode(seen, sb)
         sb.append("}")
         return sb.toString()
     }

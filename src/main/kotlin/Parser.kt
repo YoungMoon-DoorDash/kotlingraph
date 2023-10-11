@@ -21,22 +21,10 @@ object Parser {
         file.useLines { lines ->
             lines.forEach {
                 if (it.startsWith(PACKAGE_HEADER)) {
-                    val sb = StringBuilder()
-                    var i = PACKAGE_HEADER.length;
-                    while (i < it.length) {
-                        if (it[i] == '.') {
-                            break
-                        }
-
-                        sb.append(it[i])
-                        i++
-                    }
-                    ClassTree.addPackage(file.nameWithoutExtension, sb.toString())
+                    parsePackageName(it, file)
                 } else if (classFound) {
                     if (it.endsWith("{")) {
-                        requireNotNull(className) { "Class name is null"}
-
-                        ClassTree.addNode(ClassNode(className!!, file.path, dependentList.toList()))
+                        addClassName(className ?: "", file, dependentList)
 
                         classFound = false
                         className = null
@@ -44,13 +32,7 @@ object Parser {
                     } else {
                         expDep.find(it)?.let { match ->
                             val (_, depClass) = match.destructured
-                            if (depClass.endsWith("Repository") ||
-                                depClass.endsWith("Client") ||
-                                depClass == "Location" ||
-                                depClass.endsWith("DynamicValueConfig")
-                            ) {
-                                println("Skip repository layer component: $depClass")
-                            } else {
+                            if (!isRepositoryClass(depClass)) {
                                 dependentList.add(depClass)
                             }
                         }
@@ -64,4 +46,37 @@ object Parser {
             }
         }
     }
+
+    private fun addClassName(className: String, file: File, dependentList: MutableList<String>) {
+        if (className.isEmpty() || className.isBlank()) {
+            return
+        }
+
+        ClassTree.addNode(ClassNode(className, file.path, dependentList.toList()))
+        if (ClassTree.getPackage(className) == null) {
+            val packageName = ClassTree.getPackage(file.nameWithoutExtension)
+            if (packageName != null) {
+                ClassTree.addPackage(className, packageName)
+            }
+        }
+    }
+
+    private fun parsePackageName(it: String, file: File) {
+        val sb = StringBuilder()
+        var i = PACKAGE_HEADER.length;
+        while (i < it.length) {
+            if (it[i] == '.') {
+                break
+            }
+
+            sb.append(it[i])
+            i++
+        }
+        ClassTree.addPackage(file.nameWithoutExtension, sb.toString())
+    }
+
+    private fun isRepositoryClass(depClass: String) = depClass.endsWith("Repository") ||
+        depClass.endsWith("Client") ||
+        depClass == "Location" ||
+        depClass.endsWith("DynamicValueConfig")
 }

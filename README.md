@@ -46,3 +46,5 @@ Now, you can run the command in the terminal as simply by just proving the class
 ```bash
 kotlingraph GetDashPassCampaignsGrpcController
 ```
+### Sample graph
+![GetDashPassCampaignsGrpcController](https://github.com/YoungMoon-DoorDash/kotlingraph/assets/122405315/098b9643-8e2c-421a-8cd6-1a93e7c83550)

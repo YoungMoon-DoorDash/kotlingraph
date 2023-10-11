@@ -44,7 +44,11 @@ object Parser {
                     } else {
                         expDep.find(it)?.let { match ->
                             val (_, depClass) = match.destructured
-                            if (depClass.endsWith("Repository") || depClass.endsWith("Client")) {
+                            if (depClass.endsWith("Repository") ||
+                                depClass.endsWith("Client") ||
+                                depClass == "Location" ||
+                                depClass.endsWith("DynamicValueConfig")
+                            ) {
                                 println("Skip repository layer component: $depClass")
                             } else {
                                 dependentList.add(depClass)

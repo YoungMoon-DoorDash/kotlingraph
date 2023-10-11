@@ -43,17 +43,19 @@ object ClassTree {
             sb.append("digraph G {\n")
             buildGraph(it, sb, seen)
             seen.forEach { node ->
-                if (node != it.name) {
-                    val from = "${packageMap[node]}_${node}"
-                    val color = packageColor[packageMap[node] ?: ""] ?: "black"
-                    sb.append(" $from [color=$color];\n")
-                }
+                val from = "${packageMap[node]}_${node}"
+                val color = packageColor[packageMap[node] ?: ""] ?: "black"
+                sb.append(" $from [color=$color];\n")
             }
-            sb.append(" ${packageMap[it.name]}_${className} [color=blue,shape=rect];\n}")
+            sb.append("}")
             sb.toString()
         }
 
-    private fun buildGraph(node: ClassNode, sb: StringBuilder, seen: MutableSet<String>) {
+    private fun buildGraph(
+        node: ClassNode,
+        sb: StringBuilder,
+        seen: MutableSet<String>
+    ) {
         val from = "${packageMap[node.name]}_${node.name}"
         seen.add(node.name)
         node.dependencies.forEach { child ->
@@ -64,5 +66,28 @@ object ClassTree {
                 }
             }
         }
+    }
+
+    fun findDependency(className: String): String {
+        val sb = StringBuilder()
+        val from = "${packageMap[className]}_${className}"
+        sb.append("digraph G {\n")
+
+        val seen = mutableSetOf<String>()
+        seen.add(className)
+        tree.forEach { (_, node) ->
+            if (node.dependencies.contains(className)) {
+                seen.add(node.name)
+                sb.append(" ${packageMap[node.name]}_${node.name} -> $from;\n")
+            }
+        }
+
+        seen.forEach { node ->
+            val to = "${packageMap[node]}_${node}"
+            val color = packageColor[packageMap[node] ?: ""] ?: "black"
+            sb.append(" $to [color=$color];\n")
+        }
+        sb.append("}")
+        return sb.toString()
     }
 }

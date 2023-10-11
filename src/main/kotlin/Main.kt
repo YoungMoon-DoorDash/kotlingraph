@@ -43,4 +43,16 @@ fun main(args: Array<String>) {
         "rm -rf $cwd/$className.vis".runCommand(workingDir)
         "open $cwd/$className.svg".runCommand(workingDir)
     } ?: println("Class not found")
+
+    ClassTree.findDependency(className).let { graph ->
+        val cwd = Paths.get("").toAbsolutePath().toString()
+        val workingDir = File(cwd)
+        File(cwd, "${className}_dep.vis").printWriter().use { out ->
+            out.println(graph)
+        }
+
+        "dot -Kfdp -Tsvg $cwd/${className}_dep.vis -o$cwd/${className}_dep.svg".runCommand(workingDir)
+        "rm -rf $cwd/${className}_dep.vis".runCommand(workingDir)
+        "open $cwd/${className}_dep.svg".runCommand(workingDir)
+    }
 }

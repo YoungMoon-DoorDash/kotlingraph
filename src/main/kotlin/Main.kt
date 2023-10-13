@@ -59,7 +59,7 @@ fun main(args: Array<String>) {
             out.println(graph)
         }
         "dot -Kfdp -Tsvg $cwd/circular.vis -o$cwd/circular.svg".runCommand(workingDir)
-        // "rm -rf $cwd/circular.vis".runCommand(workingDir)
+        "rm -rf $cwd/circular.vis".runCommand(workingDir)
         "open $cwd/circular.svg".runCommand(workingDir)
     }
 }

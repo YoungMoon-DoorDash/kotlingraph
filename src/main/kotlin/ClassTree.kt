@@ -23,8 +23,7 @@ object ClassTree {
         "taxcalculation" to "purple"
     )
     private val tree: MutableMap<String, ClassNode> = mutableMapOf<String, ClassNode>().toSortedMap()
-    private val packageMap: MutableMap<String, String> = mutableMapOf<String, String>()
-
+    private val packageMap: MutableMap<String, String> = mutableMapOf()
 
     fun addNode(node: ClassNode) {
         tree[node.name] = node
@@ -49,6 +48,29 @@ object ClassTree {
             sb.toString()
         }
 
+    fun findCycles(className: String): String? =
+        tree[className]?.let {
+            val sb = StringBuilder()
+            val seen = mutableSetOf<String>()
+            val allNodes = mutableSetOf<String>()
+            val path = mutableListOf<String>()
+            seen.add(className)
+            path.add(className)
+
+            sb.append("digraph G {\n")
+            val numCycles = detectCycles(it, sb, seen, allNodes, path)
+            if (numCycles > 0) {
+                println("Detecting $numCycles cycles")
+
+                addColorForEachNode(allNodes, sb)
+                sb.append("}")
+                sb.toString()
+            } else {
+                println("There's no cyclic dependency")
+                null
+            }
+        }
+
     private fun buildGraph(
         node: ClassNode,
         sb: StringBuilder,
@@ -58,12 +80,42 @@ object ClassTree {
         seen.add(node.name)
         node.dependencies.forEach { child ->
             tree[child]?.let {
-                if (!seen.contains(child)) {
+                if (!seen.contains(it.name)) {
                     sb.append(" $from -> ${packageMap[it.name]}_${it.name};\n")
                     buildGraph(it, sb, seen)
                 }
             }
         }
+    }
+
+    private fun detectCycles(
+        node: ClassNode,
+        sb: StringBuilder,
+        seen: MutableSet<String>,
+        allNodes: MutableSet<String>,
+        path: MutableList<String>
+    ): Int {
+        var cycles = 0
+        seen.add(node.name)
+        allNodes.add(node.name)
+        node.dependencies.forEach { child ->
+            tree[child]?.let {
+                if (seen.contains(it.name)) {
+                    path.forEach {
+                        sb.append(" $it ->")
+                    }
+                    sb.append("$${it.name};\n")
+                    cycles++
+                } else {
+                    path.add("${packageMap[it.name]}_${it.name}")
+                    cycles += detectCycles(it, sb, seen, allNodes, path)
+                    path.removeLast()
+                }
+            }
+        }
+
+        seen.remove(node.name)
+        return cycles
     }
 
     private fun addColorForEachNode(seen: MutableSet<String>, sb: StringBuilder) {

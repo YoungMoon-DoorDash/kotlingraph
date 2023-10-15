@@ -10,14 +10,13 @@ data class ClassNode(
 
 object ClassTree {
     private val packageColor = mapOf(
-        "common" to "black",
         "dashpass_benefits" to "blue",
-        "dashpass_management" to "green",
+        "dashpass_infra" to "orange",
         "dashpass_partnerships" to "cyan",
         "mealplan" to "brown",
         "redeem_grpc" to "pink",
         "subscription_cadence" to "magenta",
-        "subscription_common" to "orange",
+        "subscription_common" to "purple",
         "subscription_grpc" to "red",
         "subscription_kafka" to "yellow",
         "taxcalculation" to "purple"

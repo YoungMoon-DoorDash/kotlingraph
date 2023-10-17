@@ -62,4 +62,6 @@ fun main(args: Array<String>) {
         "rm -rf $cwd/circular.vis".runCommand(workingDir)
         "open $cwd/circular.svg".runCommand(workingDir)
     }
+
+    ClassTree.showSameNamedClasses()
 }

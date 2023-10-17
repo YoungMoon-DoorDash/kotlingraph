@@ -23,13 +23,29 @@ object ClassTree {
     )
     private val tree: MutableMap<String, ClassNode> = mutableMapOf<String, ClassNode>().toSortedMap()
     private val packageMap: MutableMap<String, String> = mutableMapOf()
+    private val sameNamedClasses: MutableMap<String, String> = mutableMapOf()
 
     fun addNode(node: ClassNode) {
         tree[node.name] = node
     }
 
+    fun getClassNode(className: String): ClassNode? = tree[className]
+
     fun addPackage(className: String, packageName: String) {
         packageMap[className] = packageName
+    }
+
+    fun addSameNamedClass(leftClass: String, rightClass: String) {
+        sameNamedClasses[leftClass] = rightClass
+    }
+
+    fun showSameNamedClasses() {
+        if (sameNamedClasses.isNotEmpty()) {
+            println("\n\nSame named classes:")
+            sameNamedClasses.forEach { (left, right) ->
+                println("\t$left -> $right")
+            }
+        }
     }
 
     fun getPackage(className: String): String? = packageMap[className]
@@ -59,13 +75,13 @@ object ClassTree {
             sb.append("digraph G {\n")
             val numCycles = detectCycles(it, sb, seen, allNodes, path)
             if (numCycles > 0) {
-                println("Detecting $numCycles cycles")
+                println("\n\nDetecting $numCycles cycles")
 
                 addColorForEachNode(allNodes, sb)
                 sb.append("}")
                 sb.toString()
             } else {
-                println("There's no cyclic dependency")
+                println("\n\nThere's no cyclic dependency")
                 null
             }
         }

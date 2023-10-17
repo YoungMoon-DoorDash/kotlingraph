@@ -52,6 +52,14 @@ object Parser {
             return
         }
 
+        ClassTree.getClassNode(className)?.let {
+            val leftClass = "${ClassTree.getPackage(className)}_${className}"
+            val rightClass = "${ClassTree.getPackage(file.nameWithoutExtension)}_${className}"
+            if (leftClass != rightClass) {
+                ClassTree.addSameNamedClass(leftClass, rightClass)
+            }
+        }
+
         ClassTree.addNode(ClassNode(className, file.path, dependentList.toList()))
         if (ClassTree.getPackage(className) == null) {
             val packageName = ClassTree.getPackage(file.nameWithoutExtension)

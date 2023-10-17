@@ -24,6 +24,7 @@ object ClassTree {
     private val tree: MutableMap<String, ClassNode> = mutableMapOf<String, ClassNode>().toSortedMap()
     private val packageMap: MutableMap<String, String> = mutableMapOf()
     private val sameNamedClasses: MutableMap<String, String> = mutableMapOf()
+    private val cycleNodes: MutableSet<String> = mutableSetOf()
 
     fun addNode(node: ClassNode) {
         tree[node.name] = node
@@ -70,14 +71,14 @@ object ClassTree {
             val allNodes = mutableSetOf<String>()
             val path = mutableListOf<String>()
             seen.add(className)
-            path.add(className)
+            path.add("${packageMap[className]}_${className}")
 
             sb.append("digraph G {\n")
             val numCycles = detectCycles(it, sb, seen, allNodes, path)
             if (numCycles > 0) {
                 println("\n\nDetecting $numCycles cycles")
 
-                addColorForEachNode(allNodes, sb)
+                addColorForEachNode(cycleNodes, sb)
                 sb.append("}")
                 sb.toString()
             } else {
@@ -116,10 +117,12 @@ object ClassTree {
         node.dependencies.forEach { child ->
             tree[child]?.let {
                 if (seen.contains(it.name)) {
-                    path.forEach {
-                        sb.append(" $it ->")
+                    path.forEach { node ->
+                        sb.append(" $node ->")
                     }
-                    sb.append("$${it.name};\n")
+                    sb.append("${packageMap[it.name]}_${it.name};\n")
+                    seen.forEach { node -> cycleNodes.add(node) }
+                    cycleNodes.add(it.name)
                     cycles++
                 } else {
                     path.add("${packageMap[it.name]}_${it.name}")

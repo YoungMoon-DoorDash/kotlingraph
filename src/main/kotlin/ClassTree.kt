@@ -13,13 +13,15 @@ object ClassTree {
         "dashpass_benefits" to "blue",
         "dashpass_infra" to "orange",
         "dashpass_partnerships" to "cyan",
-        "mealplan" to "brown",
-        "redeem_grpc" to "pink",
         "subscription_cadence" to "magenta",
-        "subscription_common" to "purple",
+        "subscription_core" to "red",
         "subscription_grpc" to "red",
         "subscription_kafka" to "yellow",
-        "taxcalculation" to "purple"
+        // removed packages
+        "subscription_common" to "gray",
+        "mealplan" to "gray",
+        "redeem_grpc" to "gray",
+        "taxcalculation" to "gray"
     )
     private val tree: MutableMap<String, ClassNode> = mutableMapOf<String, ClassNode>().toSortedMap()
     private val packageMap: MutableMap<String, String> = mutableMapOf()

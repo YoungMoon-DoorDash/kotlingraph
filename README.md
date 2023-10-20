@@ -16,7 +16,7 @@ Download the most recent version of kotlingraph from the [github release](https:
 To build a dependency graph for a class, we need to run the following command:
 
 ```bash
-kotlingrah -r <project src folder> -c <class name to build depency graph>
+kotlingraph -r <project src folder> -c <class name to build depency graph>
 ```
 
 For example, the following command will create a dependency graph for the ```GetDashPassCampaignsGrcController```:

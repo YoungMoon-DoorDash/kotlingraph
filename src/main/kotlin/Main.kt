@@ -34,15 +34,14 @@ fun main(args: Array<String>) {
     Parser.parseFiles(rootFolder)
     val cwd = Paths.get("").toAbsolutePath().toString()
     val workingDir = File(cwd)
-    ClassTree.buildGraph(className)?.let { graph ->
-        File(cwd, "$className.vis").printWriter().use { out ->
+    ClassTree.findCycles(className)?.let { graph ->
+        File(cwd, "circular.vis").printWriter().use { out ->
             out.println(graph)
         }
-
-        "dot -Kfdp -Tsvg $cwd/$className.vis -o$cwd/$className.svg".runCommand(workingDir)
-        "rm -rf $cwd/$className.vis".runCommand(workingDir)
-        "open $cwd/$className.svg".runCommand(workingDir)
-    } ?: println("Class not found")
+        "dot -Kfdp -Tsvg $cwd/circular.vis -o$cwd/circular.svg".runCommand(workingDir)
+        "rm -rf $cwd/circular.vis".runCommand(workingDir)
+        "open $cwd/circular.svg".runCommand(workingDir)
+    }
 
     ClassTree.findDependency(className).let { graph ->
         File(cwd, "${className}_dep.vis").printWriter().use { out ->
@@ -54,14 +53,17 @@ fun main(args: Array<String>) {
         "open $cwd/${className}_dep.svg".runCommand(workingDir)
     }
 
-    ClassTree.findCycles(className)?.let { graph ->
-        File(cwd, "circular.vis").printWriter().use { out ->
+    ClassTree.buildGraph(className)?.let { graph ->
+        File(cwd, "$className.vis").printWriter().use { out ->
             out.println(graph)
         }
-        "dot -Kfdp -Tsvg $cwd/circular.vis -o$cwd/circular.svg".runCommand(workingDir)
-        "rm -rf $cwd/circular.vis".runCommand(workingDir)
-        "open $cwd/circular.svg".runCommand(workingDir)
-    }
+
+        "dot -Kfdp -Tsvg $cwd/$className.vis -o$cwd/$className.svg".runCommand(workingDir)
+        "rm -rf $cwd/$className.vis".runCommand(workingDir)
+        "open $cwd/$className.svg".runCommand(workingDir)
+    } ?: println("Class not found")
+
+
 
     ClassTree.showSameNamedClasses()
 }

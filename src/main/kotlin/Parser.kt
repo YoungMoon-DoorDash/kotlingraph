@@ -32,9 +32,7 @@ object Parser {
                     } else {
                         expDep.find(it)?.let { match ->
                             val (_, depClass) = match.destructured
-                            if (!isRepositoryClass(depClass)) {
-                                dependentList.add(depClass)
-                            }
+                            dependentList.add(depClass)
                         }
                     }
                 } else {
@@ -82,9 +80,4 @@ object Parser {
         }
         ClassTree.addPackage(file.nameWithoutExtension, sb.toString())
     }
-
-    private fun isRepositoryClass(depClass: String) = depClass.endsWith("Repository") ||
-        depClass.endsWith("Client") ||
-        depClass == "Location" ||
-        depClass.endsWith("DynamicValueConfig")
 }

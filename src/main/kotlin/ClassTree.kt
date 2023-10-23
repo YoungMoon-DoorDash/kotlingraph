@@ -10,13 +10,14 @@ data class ClassNode(
 
 object ClassTree {
     private val packageColor = mapOf(
-        "dashpass_benefits" to "blue",
-        "dashpass_infra" to "orange",
+        "dashpass_benefits" to "lavender",
+        "dashpass_infra" to "lawngreen",
         "dashpass_partnerships" to "cyan",
-        "subscription_cadence" to "magenta",
-        "subscription_core" to "red",
-        "subscription_grpc" to "red",
-        "subscription_kafka" to "yellow",
+        "subscription_cadence" to "yellow",
+        "subscription_core" to "pink",
+        "subscription_grpc" to "pink",
+        "subscription_kafka" to "sandybrown",
+        "subscription_main" to "gold",
         // removed packages
         "subscription_common" to "gray",
         "mealplan" to "gray",
@@ -142,7 +143,7 @@ object ClassTree {
         seen.forEach { node ->
             val from = "${packageMap[node]}_${node}"
             val color = packageColor[packageMap[node] ?: ""] ?: "black"
-            sb.append(" $from [color=$color];\n")
+            sb.append(" $from [color=$color,style=filled];\n")
         }
     }
 

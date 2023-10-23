@@ -167,7 +167,7 @@ object ClassTree {
 
             val classNode = getClassNode(className)
             if (classNode?.isInterface == true) {
-                sb.append(" $from [color=$INTERFACE_COLOR,style=filled,shape=rect];\n")
+                sb.append(" $from [color=black,fillcolor=$INTERFACE_COLOR,style=filled,shape=rect];\n")
             } else {
                 sb.append(" $from [color=$color,style=filled];\n")
             }

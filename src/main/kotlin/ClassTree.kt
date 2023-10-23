@@ -5,18 +5,20 @@ import kotlin.text.StringBuilder
 data class ClassNode(
     val name: String,
     val path: String,
-    val dependencies: List<String>
+    val dependencies: List<String>,
+    val isInterface: Boolean = false
 )
 
 object ClassTree {
+    private const val INTERFACE_COLOR = "yellow"
     private val packageColor = mapOf(
         "dashpass_benefits" to "lavender",
         "dashpass_infra" to "lawngreen",
         "dashpass_partnerships" to "cyan",
-        "subscription_cadence" to "yellow",
+        "subscription_cadence" to "sandybrown",
         "subscription_core" to "pink",
         "subscription_grpc" to "pink",
-        "subscription_kafka" to "sandybrown",
+        "subscription_kafka" to "tan",
         "subscription_main" to "gold",
         // removed packages
         "subscription_common" to "gray",
@@ -139,14 +141,6 @@ object ClassTree {
         return cycles
     }
 
-    private fun addColorForEachNode(seen: MutableSet<String>, sb: StringBuilder) {
-        seen.forEach { node ->
-            val from = "${packageMap[node]}_${node}"
-            val color = packageColor[packageMap[node] ?: ""] ?: "black"
-            sb.append(" $from [color=$color,style=filled];\n")
-        }
-    }
-
     fun findDependency(className: String): String {
         val sb = StringBuilder()
         val from = "${packageMap[className]}_${className}"
@@ -164,5 +158,19 @@ object ClassTree {
         addColorForEachNode(seen, sb)
         sb.append("}")
         return sb.toString()
+    }
+
+    private fun addColorForEachNode(seen: MutableSet<String>, sb: StringBuilder) {
+        seen.forEach { className ->
+            val from = "${packageMap[className]}_${className}"
+            val color = packageColor[packageMap[className] ?: ""] ?: "black"
+
+            val classNode = getClassNode(className)
+            if (classNode?.isInterface == true) {
+                sb.append(" $from [color=$INTERFACE_COLOR,style=filled,shape=rect];\n")
+            } else {
+                sb.append(" $from [color=$color,style=filled];\n")
+            }
+        }
     }
 }

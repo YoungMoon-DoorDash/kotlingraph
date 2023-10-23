@@ -3,8 +3,10 @@ import java.lang.StringBuilder
 
 object Parser {
     private const val PACKAGE_HEADER = "package com.doordash.subscription."
-    private val expClass = Regex("class (\\w+) @Inject constructor")
-    private val expDep = Regex("(\\w+): (\\w+),")
+    private const val INTERFACE_PREFIX = "interface "
+    private val classRegEx = Regex("class (\\w+)")
+    private val interfaceRegEx =  Regex("interface (\\w+)")
+    private val classTypeRegEx = Regex("(\\w+): (\\w+),")
 
     fun parseFiles(rootFolder: String) =
         File(rootFolder).walk().forEach {
@@ -20,23 +22,29 @@ object Parser {
         println("Parsing ${file.path}")
         file.useLines { lines ->
             lines.forEach {
-                if (it.startsWith(PACKAGE_HEADER)) {
+                val tline = it.trim()
+                if (tline.startsWith(PACKAGE_HEADER)) {
                     parsePackageName(it, file)
+                } else if (tline.startsWith(INTERFACE_PREFIX)) {
+                    interfaceRegEx.find(tline)?.let { match ->
+                        val interfaceName = match.destructured.component1()
+                        addClassName(interfaceName, file, mutableListOf(), true)
+                    }
                 } else if (classFound) {
-                    if (it.endsWith("{")) {
+                    if (tline.endsWith("{")) {
                         addClassName(className ?: "", file, dependentList)
 
                         classFound = false
                         className = null
                         dependentList.clear()
                     } else {
-                        expDep.find(it)?.let { match ->
+                        classTypeRegEx.find(tline)?.let { match ->
                             val (_, depClass) = match.destructured
                             dependentList.add(depClass)
                         }
                     }
                 } else {
-                    expClass.find(it)?.let { match ->
+                    classRegEx.find(tline)?.let { match ->
                         classFound = true
                         className = match.destructured.component1()
                     }
@@ -45,7 +53,12 @@ object Parser {
         }
     }
 
-    private fun addClassName(className: String, file: File, dependentList: MutableList<String>) {
+    private fun addClassName(
+        className: String,
+        file: File,
+        dependentList: MutableList<String>,
+        isInterface: Boolean = false
+    ) {
         if (className.isEmpty() || className.isBlank()) {
             return
         }
@@ -58,7 +71,7 @@ object Parser {
             }
         }
 
-        ClassTree.addNode(ClassNode(className, file.path, dependentList.toList()))
+        ClassTree.addNode(ClassNode(className, file.path, dependentList.toList(), isInterface))
         if (ClassTree.getPackage(className) == null) {
             val packageName = ClassTree.getPackage(file.nameWithoutExtension)
             if (packageName != null) {

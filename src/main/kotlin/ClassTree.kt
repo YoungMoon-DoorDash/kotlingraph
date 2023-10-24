@@ -100,11 +100,17 @@ object ClassTree {
     ) {
         val from = "${packageMap[node.name]}_${node.name}"
         seen.add(node.name)
+        println("visit: ${node.name} with ${node.dependencies}")
         node.dependencies.forEach { child ->
             tree[child]?.let {
                 if (!seen.contains(it.name)) {
                     sb.append(" $from -> ${packageMap[it.name]}_${it.name};\n")
                     buildGraph(it, sb, seen)
+                }
+            } ?: let {
+                if (!seen.contains(child)) {
+                    seen.add(child)
+                    sb.append(" $from -> extern_${child};\n")
                 }
             }
         }
@@ -163,14 +169,16 @@ object ClassTree {
 
     private fun addColorForEachNode(seen: MutableSet<String>, sb: StringBuilder) {
         seen.forEach { className ->
-            val from = "${packageMap[className]}_${className}"
-            val color = packageColor[packageMap[className] ?: ""] ?: DEFAULT_COLOR
+            packageMap[className]?.let {
+                val from = "${it}_${className}"
+                val color = packageColor[it] ?: DEFAULT_COLOR
 
-            val classNode = getClassNode(className)
-            if (classNode?.isInterface == true) {
-                sb.append(" $from [color=black,fillcolor=$INTERFACE_COLOR,style=filled,shape=rect];\n")
-            } else {
-                sb.append(" $from [color=$color,style=filled];\n")
+                val classNode = getClassNode(className)
+                if (classNode?.isInterface == true) {
+                    sb.append(" $from [color=black,fillcolor=$INTERFACE_COLOR,style=filled,shape=rect];\n")
+                } else {
+                    sb.append(" $from [color=$color,style=filled];\n")
+                }
             }
         }
     }

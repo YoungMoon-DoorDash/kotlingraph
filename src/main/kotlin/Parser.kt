@@ -4,7 +4,8 @@ import java.lang.StringBuilder
 object Parser {
     private const val PACKAGE_HEADER = "package com.doordash.subscription."
     private const val INTERFACE_PREFIX = "interface "
-    private val classRegEx = Regex("class (\\w+)")
+    private val injectClassReg = Regex("class (\\w+) @Inject")
+    private val openClassReg = Regex("open class (\\w+)")
     private val interfaceRegEx =  Regex("interface (\\w+)")
     private val classTypeRegEx = Regex("(\\w+): (\\w+),")
 
@@ -44,9 +45,14 @@ object Parser {
                         }
                     }
                 } else {
-                    classRegEx.find(tline)?.let { match ->
+                    injectClassReg.find(tline)?.let { match ->
                         classFound = true
                         className = match.destructured.component1()
+                    } ?: let {
+                        openClassReg.find(tline)?.let { match ->
+                            classFound = true
+                            className = match.destructured.component1()
+                        }
                     }
                 }
             }

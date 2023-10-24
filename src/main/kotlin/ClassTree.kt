@@ -100,7 +100,6 @@ object ClassTree {
     ) {
         val from = "${packageMap[node.name]}_${node.name}"
         seen.add(node.name)
-        println("visit: ${node.name} with ${node.dependencies}")
         node.dependencies.forEach { child ->
             tree[child]?.let {
                 if (!seen.contains(it.name)) {

@@ -11,6 +11,7 @@ data class ClassNode(
 
 object ClassTree {
     private const val INTERFACE_COLOR = "yellow"
+    private const val DEFAULT_COLOR = "slategray"
     private val packageColor = mapOf(
         "dashpass_benefits" to "lavender",
         "dashpass_infra" to "lawngreen",
@@ -21,10 +22,10 @@ object ClassTree {
         "subscription_kafka" to "tan",
         "subscription_main" to "gold",
         // removed packages
-        "subscription_common" to "gray",
-        "mealplan" to "gray",
-        "redeem_grpc" to "gray",
-        "taxcalculation" to "gray"
+        "subscription_common" to "lightgray",
+        "mealplan" to "lightgray",
+        "redeem_grpc" to "lightgray",
+        "taxcalculation" to "lightgray"
     )
     private val tree: MutableMap<String, ClassNode> = mutableMapOf<String, ClassNode>().toSortedMap()
     private val packageMap: MutableMap<String, String> = mutableMapOf()
@@ -163,7 +164,7 @@ object ClassTree {
     private fun addColorForEachNode(seen: MutableSet<String>, sb: StringBuilder) {
         seen.forEach { className ->
             val from = "${packageMap[className]}_${className}"
-            val color = packageColor[packageMap[className] ?: ""] ?: "black"
+            val color = packageColor[packageMap[className] ?: ""] ?: DEFAULT_COLOR
 
             val classNode = getClassNode(className)
             if (classNode?.isInterface == true) {

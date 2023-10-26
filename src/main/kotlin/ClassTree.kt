@@ -168,15 +168,17 @@ object ClassTree {
 
     private fun addColorForEachNode(seen: MutableSet<String>, sb: StringBuilder) {
         seen.forEach { className ->
-            packageMap[className]?.let {
-                val from = "${it}_${className}"
-                val color = packageColor[it] ?: DEFAULT_COLOR
+            tree[className]?.let {
+                packageMap[className]?.let {
+                    val from = "${it}_${className}"
+                    val color = packageColor[it] ?: DEFAULT_COLOR
 
-                val classNode = getClassNode(className)
-                if (classNode?.isInterface == true) {
-                    sb.append(" $from [color=black,fillcolor=$INTERFACE_COLOR,style=filled,shape=rect];\n")
-                } else {
-                    sb.append(" $from [color=$color,style=filled];\n")
+                    val classNode = getClassNode(className)
+                    if (classNode?.isInterface == true) {
+                        sb.append(" $from [color=black,fillcolor=$INTERFACE_COLOR,style=filled,shape=rect];\n")
+                    } else {
+                        sb.append(" $from [color=$color,style=filled];\n")
+                    }
                 }
             }
         }

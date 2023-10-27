@@ -6,6 +6,9 @@ object Parser {
     private val injectClassReg = Regex("class (\\w+) @Inject")
     private val openClassReg = Regex("open class (\\w+)")
     private val interfaceRegEx =  Regex("interface (\\w+)")
+    private val externClass = setOf(
+        "AsgardRedisClient"
+    )
 
     fun parseFiles(rootFolder: String) =
         File(rootFolder).walk().forEach {
@@ -109,6 +112,11 @@ object Parser {
         val sb = StringBuilder()
         val templateIndex = it.indexOf("<", separtorIndex + 1)
         return if (templateIndex > 0) {
+            val containerClassName = it.substring(separtorIndex + 1, templateIndex).trim()
+            if (externClass.contains(containerClassName)) {
+                return null
+            }
+
             var i = templateIndex + 1
             while (i < it.length) {
                 if (it[i] == '>') {

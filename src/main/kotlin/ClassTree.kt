@@ -122,11 +122,6 @@ object ClassTree {
                     sb.append(" $from -> ${packageMap[it.name]}_${it.name};\n")
                     buildGraph(it, sb, seen, packages)
                 }
-            } ?: let {
-                if (!seen.contains(child)) {
-                    seen.add(child)
-                    sb.append(" $from -> extern_${child};\n")
-                }
             }
         }
     }

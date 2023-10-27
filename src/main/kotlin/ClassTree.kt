@@ -10,7 +10,6 @@ data class ClassNode(
 )
 
 object ClassTree {
-    private const val INTERFACE_COLOR = "yellow"
     private const val DEFAULT_COLOR = "slategray"
     private val packageColor = mapOf(
         "dashpass_benefits" to "lavender",
@@ -35,6 +34,11 @@ object ClassTree {
         "SubscriptionSharedService" to "SubscriptionSharedServiceImpl",
         "PartnerSharedService" to "PartnerSharedServiceImpl",
         "BenefitsSharedService" to "BenefitsSharedServiceImpl"
+    )
+    private val classToInterface = mapOf(
+        "SubscriptionSharedServiceImpl" to "SubscriptionSharedService",
+        "PartnerSharedServiceImpl" to "PartnerSharedService",
+        "BenefitsSharedServiceImpl" to "BenefitsSharedService"
     )
 
     fun addNode(node: ClassNode) {
@@ -158,10 +162,11 @@ object ClassTree {
         val from = "${packageMap[className]}_${className}"
         sb.append("digraph G {\n")
 
+        val classToFind = classToInterface[className] ?: className
         val seen = mutableSetOf<String>()
         seen.add(className)
         tree.forEach { (_, node) ->
-            if (node.dependencies.contains(className)) {
+            if (node.dependencies.contains(classToFind)) {
                 seen.add(node.name)
                 sb.append(" ${packageMap[node.name]}_${node.name} -> $from;\n")
             }

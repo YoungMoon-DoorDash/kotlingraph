@@ -70,12 +70,16 @@ object ClassTree {
         tree[className]?.let {
             val sb = StringBuilder()
             val seen = mutableSetOf<String>()
+            val packages = mutableSetOf<String>()
             seen.add(className)
 
             sb.append("digraph G {\n")
-            buildGraph(it, sb, seen)
+            buildGraph(it, sb, seen, packages)
             addColorForEachNode(seen, sb)
             sb.append("}")
+
+            println("Dependent packages:")
+            packages.forEach { println("\t$it") }
             sb.toString()
         }
 
@@ -105,15 +109,18 @@ object ClassTree {
     private fun buildGraph(
         node: ClassNode,
         sb: StringBuilder,
-        seen: MutableSet<String>
+        seen: MutableSet<String>,
+        packages: MutableSet<String>,
     ) {
-        val from = "${packageMap[node.name]}_${node.name}"
+        val curPackage = packageMap[node.name] ?: "extern"
+        val from = "${curPackage}_${node.name}"
+        packages.add(curPackage)
         seen.add(node.name)
         node.dependencies.forEach { child ->
             tree[child]?.let {
                 if (!seen.contains(it.name)) {
                     sb.append(" $from -> ${packageMap[it.name]}_${it.name};\n")
-                    buildGraph(it, sb, seen)
+                    buildGraph(it, sb, seen, packages)
                 }
             } ?: let {
                 if (!seen.contains(child)) {

@@ -55,3 +55,10 @@ kotlingraph GetDashPassCampaignsGrpcController
    - Second one postfixed with "_dep" shows all classes using the specified class. 
 ![SubscriptionHelper_dep](https://github.com/YoungMoon-DoorDash/kotlingraph/assets/122405315/340ca300-edfb-448f-baec-577dd980a156)
 
+***NOTE:***
+- A class object displayed as an ellipse,
+- Objects in the same package are displayed with the same cololr.
+- Interface object is identified as the leaf node and displayed as a rectangle.
+   - ![image](https://github.com/YoungMoon-DoorDash/kotlingraph/assets/122405315/9144153a-9732-4673-b4e3-44ec83654e0d)
+
+

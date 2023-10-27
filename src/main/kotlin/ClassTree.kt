@@ -31,6 +31,11 @@ object ClassTree {
     private val packageMap: MutableMap<String, String> = mutableMapOf()
     private val sameNamedClasses: MutableMap<String, String> = mutableMapOf()
     private val cycleNodes: MutableSet<String> = mutableSetOf()
+    private val interfaceToClass = mapOf(
+        "SubscriptionSharedService" to "SubscriptionSharedServiceImpl",
+        "PartnerSharedService" to "PartnerSharedServiceImpl",
+        "BenefitsSharedService" to "BenefitsSharedServiceImpl"
+    )
 
     fun addNode(node: ClassNode) {
         tree[node.name] = node
@@ -127,16 +132,17 @@ object ClassTree {
         allNodes.add(node.name)
         node.dependencies.forEach { child ->
             tree[child]?.let {
-                if (seen.contains(it.name)) {
+                val nodeName = interfaceToClass[it.name] ?: it.name
+                if (seen.contains(nodeName)) {
                     path.forEach { node ->
                         sb.append(" $node ->")
                     }
-                    sb.append("${packageMap[it.name]}_${it.name};\n")
+                    sb.append("${packageMap[nodeName]}_${nodeName};\n")
                     seen.forEach { node -> cycleNodes.add(node) }
-                    cycleNodes.add(it.name)
+                    cycleNodes.add(nodeName)
                     cycles++
                 } else {
-                    path.add("${packageMap[it.name]}_${it.name}")
+                    path.add("${packageMap[nodeName]}_${nodeName}")
                     cycles += detectCycles(it, sb, seen, allNodes, path)
                     path.removeLast()
                 }

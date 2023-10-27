@@ -1,5 +1,4 @@
 import java.io.File
-import java.lang.StringBuilder
 
 object Parser {
     private const val PACKAGE_HEADER = "package com.doordash.subscription."
@@ -7,7 +6,6 @@ object Parser {
     private val injectClassReg = Regex("class (\\w+) @Inject")
     private val openClassReg = Regex("open class (\\w+)")
     private val interfaceRegEx =  Regex("interface (\\w+)")
-    private val classTypeRegEx = Regex("(\\w+): (\\w+),")
 
     fun parseFiles(rootFolder: String) =
         File(rootFolder).walk().forEach {
@@ -39,8 +37,7 @@ object Parser {
                         className = null
                         dependentList.clear()
                     } else {
-                        classTypeRegEx.find(tline)?.let { match ->
-                            val (_, depClass) = match.destructured
+                        parseClassName(tline)?.let { depClass ->
                             dependentList.add(depClass)
                         }
                     }
@@ -98,5 +95,41 @@ object Parser {
             i++
         }
         ClassTree.addPackage(file.nameWithoutExtension, sb.toString())
+    }
+
+    private fun parseClassName(it: String): String? {
+        if (it.startsWith("//") || it.startsWith(")"))
+            return null
+
+        var separtorIndex = it.indexOf(":")
+        if (separtorIndex == -1) {
+            return null
+        }
+
+        val sb = StringBuilder()
+        val templateIndex = it.indexOf("<", separtorIndex + 1)
+        return if (templateIndex > 0) {
+            var i = templateIndex + 1
+            while (i < it.length) {
+                if (it[i] == '>') {
+                    break
+                }
+
+                sb.append(it[i])
+                i++
+            }
+            sb.toString().trim()
+        } else {
+            var i = separtorIndex + 1
+            while (i < it.length) {
+                if (it[i] == ',' || it[i] == '?' || it[i] == '=') {
+                    break
+                }
+
+                sb.append(it[i])
+                i++
+            }
+            sb.toString().trim().replace(".", "_")
+        }
     }
 }

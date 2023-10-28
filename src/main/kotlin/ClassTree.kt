@@ -31,11 +31,17 @@ object ClassTree {
     private val sameNamedClasses: MutableMap<String, String> = mutableMapOf()
     private val cycleNodes: MutableSet<String> = mutableSetOf()
     private val interfaceToClass = mapOf(
+        "CadenceSharedService" to "CadenceSharedServiceImpl",
+        "ScriptSharedService" to "ScriptSharedServiceImpl",
+        "SubscribeSharedService" to "SubscribeSharedServiceImpl",
         "SubscriptionSharedService" to "SubscriptionSharedServiceImpl",
         "PartnerSharedService" to "PartnerSharedServiceImpl",
         "BenefitsSharedService" to "BenefitsSharedServiceImpl"
     )
     private val classToInterface = mapOf(
+        "CadenceSharedServiceImpl" to "CadenceSharedService",
+        "ScriptSharedServiceImpl" to "ScriptSharedService",
+        "SubscribeSharedServiceImpl" to "SubscribeSharedService",
         "SubscriptionSharedServiceImpl" to "SubscriptionSharedService",
         "PartnerSharedServiceImpl" to "PartnerSharedService",
         "BenefitsSharedServiceImpl" to "BenefitsSharedService"

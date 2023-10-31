@@ -57,6 +57,10 @@ object Parser {
                 }
             }
         }
+
+        if (classFound) {
+            addClassName(className ?: "", file, dependentList)
+        }
     }
 
     private fun addClassName(

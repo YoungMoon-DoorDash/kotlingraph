@@ -12,25 +12,22 @@ data class ClassNode(
 object ClassTree {
     private const val DEFAULT_COLOR = "slategray"
     private val packageColor = mapOf(
-        "dashpass_benefits" to "lavender",
+        "dashpass_eligibility" to "sandybrown",
+        "dashpass_manager" to "tan",
+        "dashpass_value" to "lavender",
         "dashpass_infra" to "lawngreen",
         "dashpass_partnerships" to "cyan",
-        "subscription_cadence" to "sandybrown",
         "subscription_core" to "pink",
         "subscription_grpc" to "pink",
-        "subscription_kafka" to "tan",
         "subscription_main" to "gold",
-        // removed packages
-        "subscription_common" to "lightgray",
-        "mealplan" to "lightgray",
-        "redeem_grpc" to "lightgray",
-        "taxcalculation" to "lightgray"
     )
     private val tree: MutableMap<String, ClassNode> = mutableMapOf<String, ClassNode>().toSortedMap()
     private val packageMap: MutableMap<String, String> = mutableMapOf()
     private val sameNamedClasses: MutableMap<String, String> = mutableMapOf()
     private val cycleNodes: MutableSet<String> = mutableSetOf()
     private val interfaceToClass = mapOf(
+        "EligibilitySharedService" to "EligibilitySharedServiceImpl",
+        "SubscriptionTransition" to "SubscriptionTransitionImpl",
         "CadenceSharedService" to "CadenceSharedServiceImpl",
         "ScriptSharedService" to "ScriptSharedServiceImpl",
         "SubscribeSharedService" to "SubscribeSharedServiceImpl",
@@ -39,6 +36,8 @@ object ClassTree {
         "BenefitsSharedService" to "BenefitsSharedServiceImpl"
     )
     private val classToInterface = mapOf(
+        "EligibilitySharedServiceImpl" to "EligibilitySharedService",
+        "SubscriptionTransitionImpl" to "SubscriptionTransition",
         "CadenceSharedServiceImpl" to "CadenceSharedService",
         "ScriptSharedServiceImpl" to "ScriptSharedService",
         "SubscribeSharedServiceImpl" to "SubscribeSharedService",
